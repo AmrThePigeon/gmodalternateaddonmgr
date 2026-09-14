@@ -3,6 +3,15 @@ Tool that auto extracts all garry's mod addons recursively to internal game addo
 
 A portable tool that you can use this everywhere and all paths are saved in `config.json`
 
+It is recommended to keep all of the script content in it's own directory.
+
+# Requirements
+**Windows:**
+
+[git bash](https://git-scm.com/install/windows)
+
+You run the script via git bash.
+
 Credits:
 - [jq](https://github.com/jqlang/jq) by [jqlang](https://github.com/jqlang)
 - [fastgmad](https://github.com/WilliamVenner/fastgmad) by [WilliamVenner](https://github.com/WilliamVenner)
