@@ -10,6 +10,8 @@ It is recommended to keep all of the script content in it's own directory.
 
 [git bash](https://git-scm.com/install/windows)
 
+fastgmad and jq are included in the releases
+
 You run the script via git bash.
 
 Credits:
