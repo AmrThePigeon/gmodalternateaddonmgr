@@ -2,12 +2,22 @@
 convert_to_gitbash() {
     echo "$1" | sed 's|\\|/|g; s|^\([A-Za-z]\):|/\L\1|'
 }
+echo_red() {
+   echo -e "\e[31m$1\e[0m"
+}
+echo_blue() {
+   echo -e "\033[0;34m$1\033[0m"
+}
+echo_yellow() {
+   echo -e "\033[0;33m$1\033[0m"
+}
 if [[ ! -f "config.json" ]]; then
    read -r -p "Garry's Mod path: " gmodpath
    read -r -p "Workshop addons path: " modfolder
 
    if [[ ! -d "$gmodpath" ]]; then
-      echo -e "Garry's Mod path is invalid"
+      echo_red "Garry's Mod path is invalid"
+      read -n 1 -s -p "Press any key to continue..."
       exit 1
    else
       if [[ ! -d "$gmodpath/garrysmod/addons" ]]; then
@@ -16,7 +26,8 @@ if [[ ! -f "config.json" ]]; then
    fi
 
    if [[ ! -d "$modfolder" ]]; then
-      echo -e "Workshop path is invalid"
+      echo_red "Workshop path is invalid"
+      read -n 1 -s -p "Press any key to continue..."
       exit 1
    fi
    
@@ -33,7 +44,8 @@ if [[ -f "config.json" ]]; then
    gmodpath=$(./jq.exe -r '.gmod' "config.json" )
    modfolder=$(./jq.exe -r '.mod' "config.json")
    if [[ ! -d "$gmodpath" ]]; then
-      echo -e "Garry's Mod path is invalid"
+      echo_red "Garry's Mod path is invalid"
+      read -n 1 -s -p "Press any key to continue..."
       exit 1
    else
       if [[ ! -d "$gmodpath/garrysmod/addons" ]]; then
@@ -42,7 +54,8 @@ if [[ -f "config.json" ]]; then
    fi
 
    if [[ ! -d "$modfolder" ]]; then
-      echo -e "Workshop path is invalid"
+      echo_red "Workshop path is invalid"
+      read -n 1 -s -p "Press any key to continue..."
       exit 1
    fi
 fi
@@ -51,18 +64,35 @@ gmodpath=$(convert_to_gitbash "$gmodpath")
 modfolder=$(convert_to_gitbash "$modfolder")
 
 mapfile -t modfile < <(find "$modfolder" -name "*.gma") # returns "folder/test.gma"
+mapfile -t legacymodfile < <(find "$modfolder" -name "*.bin")
+
+for legacyfilebin in "${legacymodfile[@]}"; do
+if [[ "$legacyfilebin" != "null" ]]; then
+   legacyfilename=$(basename "$legacyfilebin")
+   legacyparent=$(dirname "$legacyfilebin")
+   legacyparent="$legacyparent/"
+   ./7zr.exe x "$legacyfilebin" -y -o"$legacyparent" > /dev/null 2>&1 || true
+   legacyfile=${legacyfilebin%.bin}
+   if [[ -f "$legacyfile" ]]; then
+      mv "$legacyfile" "$legacyfile.gma"
+   fi
+fi
+done
 
 for file in "${modfile[@]}"; do
 
 if [[ "$file" != "null" ]]; then
-   ./fastgmad.exe extract -file "$file"
+   if ! ./fastgmad.exe extract -file "$file" 2>/dev/null; then
+      echo_red "An error occurred on fastgmad tool"
+   fi
 else
-   echo -e "Error: file list is empty"
+   echo_red "Error: file list is empty"
+   exit 1
 fi
 
 gma_file=$(realpath "$file")
-gma_real_dir=${gma_file%.gma}
 gma_real_dir_for_json=${gma_file%.gma}
+gma_real_dir=${gma_file%.gma}
 gma_real_dir="$gma_real_dir/"
 filename=$(basename "$gma_file")
 parent=$(dirname "$gma_file")
@@ -73,21 +103,23 @@ safe=$(echo "$title" | sed 's/[<>:"\/\\|?*]/_/g')
 
 if [[ ! -d "$parent$safe" ]]; then
    if [ -n "$parent$safe" ] && [ "$parent$safe" != "null" ]; then
+      echo_blue "Extracting \"$title\""
       mv -f "$gma_real_dir" "$parent$safe"
       if ! mv -f "$parent$safe" "$gmodpath/garrysmod/addons/$safe" 2>/dev/null; then
-         echo -e "'$title' already exists"
+         echo_yellow "'$title' already exists"
          rm -rf "$parent$safe"
       fi
    else
-      echo "Could not find a 'title' field in $json_file"
+      echo_red "Could not find a 'title' field in $json_file"
    fi
 else
   if [[ -d "$gma_real_dir" && -d "$parent$safe" ]]; then
-   echo -e "Directory '$title' already exists"
+   echo_yellow "Directory '$title' already exists"
    rm -rf "$gma_real_dir"
-   echo -e "$gma_real_dir"
   else
-   echo -e "Directory '$title' already exists"
+   echo_yellow "Directory '$title' already exists"
   fi
+  echo_blue "Extraction complete"
+  read -n 1 -s -p "Press any key to continue..."
 fi
 done
