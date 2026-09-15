@@ -1,4 +1,3 @@
-#!/bin/bash
 convert_to_gitbash() {
     echo "$1" | sed 's|\\|/|g; s|^\([A-Za-z]\):|/\L\1|'
 }
@@ -63,7 +62,6 @@ fi
 gmodpath=$(convert_to_gitbash "$gmodpath")
 modfolder=$(convert_to_gitbash "$modfolder")
 
-mapfile -t modfile < <(find "$modfolder" -name "*.gma") # returns "folder/test.gma"
 mapfile -t legacymodfile < <(find "$modfolder" -name "*.bin")
 
 for legacyfilebin in "${legacymodfile[@]}"; do
@@ -78,6 +76,8 @@ if [[ "$legacyfilebin" != "null" ]]; then
    fi
 fi
 done
+
+mapfile -t modfile < <(find "$modfolder" -name "*.gma")
 
 for file in "${modfile[@]}"; do
 
@@ -119,7 +119,11 @@ else
   else
    echo_yellow "Directory '$title' already exists"
   fi
-  echo_blue "Extraction complete"
-  read -n 1 -s -p "Press any key to continue..."
 fi
+echo_blue "Extraction complete"
+if [[ -f "$legacyfile.gma" ]]; then
+   rm -f "$legacyfile.gma"
+fi
+legacyfile=''
+read -n 1 -s -p "Press any key to continue..."
 done
