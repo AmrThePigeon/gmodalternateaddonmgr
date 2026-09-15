@@ -120,10 +120,10 @@ else
    echo_yellow "Directory '$title' already exists"
   fi
 fi
-echo_blue "Extraction complete"
 if [[ -f "$legacyfile.gma" ]]; then
    rm -f "$legacyfile.gma"
 fi
 legacyfile=''
 done
+echo_blue "Extraction complete"
 read -n 1 -s -p "Press any key to continue..."
