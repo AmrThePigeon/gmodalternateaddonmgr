@@ -10,10 +10,11 @@ It is recommended to keep all of the script content in it's own directory.
 
 [git bash](https://git-scm.com/install/windows)
 
-fastgmad and jq are included in the releases
+fastgmad, jq and 7zr are included in the releases
 
 You run the script via git bash.
 
-Credits:
+# Credits:
 - [jq](https://github.com/jqlang/jq) by [jqlang](https://github.com/jqlang)
 - [fastgmad](https://github.com/WilliamVenner/fastgmad) by [WilliamVenner](https://github.com/WilliamVenner)
+- [7zip or 7zr](https://7-zip.org)
