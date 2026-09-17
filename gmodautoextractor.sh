@@ -10,6 +10,9 @@ echo_blue() {
 echo_yellow() {
    echo -e "\033[0;33m$1\033[0m"
 }
+echo_green() {
+   echo -e "\e[1;32m$1\e[0m"
+}
 if [[ ! -f "config.json" ]]; then
    read -r -p "Garry's Mod path: " gmodpath
    read -r -p "Workshop addons path: " modfolder
@@ -21,6 +24,11 @@ if [[ ! -f "config.json" ]]; then
    else
       if [[ ! -d "$gmodpath/garrysmod/addons" ]]; then
          mkdir "$gmodpath/garrysmod/addons"
+      fi
+      if [[ ! -f "$gmodpath/gmod.exe" ]]; then
+         echo_red "Garry's Mod path is invalid"
+         read -n 1 -s -p "Press any key to continue..."
+         exit 1
       fi
    fi
 
@@ -50,6 +58,11 @@ if [[ -f "config.json" ]]; then
       if [[ ! -d "$gmodpath/garrysmod/addons" ]]; then
          mkdir "$gmodpath/garrysmod/addons"
       fi
+      if [[ ! -f "$gmodpath/gmod.exe" ]]; then
+         echo_red "Garry's Mod path is invalid"
+         read -n 1 -s -p "Press any key to continue..."
+         exit 1
+      fi
    fi
 
    if [[ ! -d "$modfolder" ]]; then
@@ -64,8 +77,12 @@ modfolder=$(convert_to_gitbash "$modfolder")
 
 mapfile -t legacymodfile < <(find "$modfolder" -name "*.bin")
 
+if [[ -n "$legacymodfile" ]]; then
+      echo_blue "Extracting legacy files"
+fi
+
 for legacyfilebin in "${legacymodfile[@]}"; do
-if [[ "$legacyfilebin" != "null" ]]; then
+if [[ -n "$legacyfilebin" ]]; then
    legacyfilename=$(basename "$legacyfilebin")
    legacyparent=$(dirname "$legacyfilebin")
    legacyparent="$legacyparent/"
@@ -81,12 +98,12 @@ mapfile -t modfile < <(find "$modfolder" -name "*.gma")
 
 for file in "${modfile[@]}"; do
 
-if [[ "$file" != "null" ]]; then
+if [[ -n "$file" ]]; then
    if ! ./fastgmad.exe extract -file "$file" 2>/dev/null; then
       echo_red "An error occurred on fastgmad tool"
    fi
 else
-   echo_red "Error: file list is empty"
+   echo_red "Error: no files detected"
    exit 1
 fi
 
@@ -98,32 +115,38 @@ filename=$(basename "$gma_file")
 parent=$(dirname "$gma_file")
 parent="$parent/"
 json_file="$gma_real_dir_for_json/addon.json"
-title=$(./jq.exe -r '.title' "$json_file")
 safe=$(echo "$title" | sed 's/[<>:"\/\\|?*]/_/g')
+title=$(./jq.exe -r '.title' "$json_file")
 
 if [[ ! -d "$parent$safe" ]]; then
    if [ -n "$parent$safe" ] && [ "$parent$safe" != "null" ]; then
-      echo_blue "Extracting \"$title\""
+      if [[ -d "$gmodpath/garrysmod/addons/$safe" ]]; then
+         echo_yellow "Directory '$safe' already exists"
+      fi
       mv -f "$gma_real_dir" "$parent$safe"
+      echo_blue "Extracting \"$title\""
       if ! mv -f "$parent$safe" "$gmodpath/garrysmod/addons/$safe" 2>/dev/null; then
-         echo_yellow "'$title' already exists"
          rm -rf "$parent$safe"
       fi
    else
       echo_red "Could not find a 'title' field in $json_file"
    fi
 else
-  if [[ -d "$gma_real_dir" && -d "$parent$safe" ]]; then
-   echo_yellow "Directory '$title' already exists"
+  if [[ -d "$gma_real_dir" && -d "$gmodpath/garrysmod/addons/$safe" ]]; then
    rm -rf "$gma_real_dir"
-  else
-   echo_yellow "Directory '$title' already exists"
   fi
 fi
-if [[ -f "$legacyfile.gma" ]]; then
-   rm -f "$legacyfile.gma"
-fi
-legacyfile=''
 done
-echo_blue "Extraction complete"
+
+mapfile -t legacymodfile2 < <(find "$modfolder" -name "*.bin")
+for legacyfilebin2 in "${legacymodfile2[@]}"; do
+if [[ -n "$legacyfilebin2" ]]; then
+   legacyfile2=${legacyfilebin2%.bin}
+   if [[ -f "$legacyfile2.gma" ]]; then
+      rm -f "$legacyfile2.gma"
+   fi
+fi
+done
+
+echo_green "Extraction complete"
 read -n 1 -s -p "Press any key to continue..."
