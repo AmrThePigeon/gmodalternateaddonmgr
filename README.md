@@ -14,6 +14,16 @@ fastgmad, jq and 7zr are included in the releases
 
 You run the script via git bash.
 
+# Usage
+- Right-Click on `gmodautoextractor.sh`, then "Open with" --> "Git for windows"
+
+*Or*
+
+- Open git bash on the tool's directory and run this command
+```
+./gmodautoextractor.sh
+```
+
 # Credits:
 - [jq](https://github.com/jqlang/jq) by [jqlang](https://github.com/jqlang)
 - [fastgmad](https://github.com/WilliamVenner/fastgmad) by [WilliamVenner](https://github.com/WilliamVenner)
