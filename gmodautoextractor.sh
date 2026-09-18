@@ -13,6 +13,11 @@ echo_yellow() {
 echo_green() {
    echo -e "\e[1;32m$1\e[0m"
 }
+
+if [[ ! -f "config.json" ]]; then
+   cd "$(dirname "${BASH_SOURCE[0]}")"
+fi
+
 if [[ ! -f "config.json" ]]; then
    read -r -p "Garry's Mod path: " gmodpath
    read -r -p "Workshop addons path: " modfolder
