@@ -1,4 +1,4 @@
-# Garry's Mod Alternate Tool Manager
+# Garry's Mod Alternate Addon Manager
 A tool that covers these functions:
 - **Auto addon extraction from workshop directory to `Garrysmod/garrysmod/addons` directory**
 - **Auto Renaming for extracted mods to their correct name**
