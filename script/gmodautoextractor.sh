@@ -80,12 +80,6 @@ if [[ -f "config.json" ]]; then
    echo -e "$config" > "config.json"
    gmodpath=$(./script/jq.exe -r '.gmod' "config.json" )
    modfolder=$(./script/jq.exe -r '.mod' "config.json")
-   if [[ -z "$modfolder" ]]; then
-        read -r -p "Workshop addons path: " modfolder
-        cat_config=$(cat "config.json")
-        config="$(printf '%s' "$cat_config" | sed 's/\\/\//g')"
-        echo -e "$config" > "config.json"
-   fi
    if [[ ! -d "$gmodpath" ]]; then
       echo_red "Garry's Mod path is invalid"
       read -n 1 -s -p "Press any key to continue..."
@@ -99,12 +93,17 @@ if [[ -f "config.json" ]]; then
          read -n 1 -s -p "Press any key to continue..."
          exit 1
       fi
-   fi
-
-   if [[ ! -d "$modfolder" ]]; then
-      echo_red "Workshop path is invalid"
-      read -n 1 -s -p "Press any key to continue..."
-      exit 1
+      if [[ -z "$modfolder" ]]; then
+         read -r -p "Workshop addons path: " modfolder
+         modfolder="$(printf '%s' "$modfolder" | sed 's/\\/\//g')"
+         if [[ ! -d "$modfolder" ]]; then
+            echo_red "Workshop path is invalid"
+            read -n 1 -s -p "Press any key to continue..."
+            exit 1
+         else
+            echo -e "{\n\"gmod\": \""$gmodpath"\",\n\"mod\": \""$modfolder"\"\n}" > "config.json"
+         fi
+      fi
    fi
 fi
 
