@@ -1,3 +1,5 @@
+clear
+
 echo_blue() {
    echo -e "\033[36m$1\033[0m"
 }
@@ -28,10 +30,11 @@ gmodautoextractorsh=$(curl -s "https://raw.githubusercontent.com/AmrThePigeon/gm
 updatescript=$(curl -s "https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/script/updater.sh" | cat)
 
 
-echo -e "$gmodaddonmgrbat" > "../gmodaddonmgr.bat"
-echo -e "$gmodaddonmgrbat" > "addon_manager.sh"
-echo -e "$gmodaddonmgrbat" > "gmodautoextractor.sh"
-echo -e "$updatescript" > "updater.sh"
+echo "$gmodaddonmgrbat" > "../gmodaddonmgr.bat"
+echo "$gmodaddonmgrbat" > "addon_manager.sh"
+echo "$gmodautoextractorsh" > "gmodautoextractor.sh"
+echo "$updatescript" > "updater.sh"
+echo "$latest" > "version"
 
 echo_blue "Update complete"
 read -n 1 -s -p "Press any key to continue..."
