@@ -5,14 +5,6 @@ A tool that covers these functions:
 - **Includes extraction for legacy bin files**
 - **Enabling/Disabling local addons**
 
-# Requirements
-
-**Windows:**
-
-[Git bash](https://git-scm.com/install/windows)
-
-fastgmad, jq and 7zr are included in the releases
-
 ## Third-Party Open Source Tools
 
 This project bundles several open-source tools as external utilities. You can find their respective license files inside their bundled directories.
