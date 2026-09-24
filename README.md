@@ -13,8 +13,18 @@ A tool that covers these functions:
 
 fastgmad, jq and 7zr are included in the releases
 
-# Credits:
-- [jq](https://github.com/jqlang/jq) by [jqlang](https://github.com/jqlang)
-- [fastgmad](https://github.com/WilliamVenner/fastgmad) by [WilliamVenner](https://github.com/WilliamVenner)
-- [7zip or 7zr](https://7-zip.org)
-- [fzf](https://github.com/junegunn/fzf) by [junegunn](https://github.com/junegunn)
+## Third-Party Open Source Tools
+
+This project bundles several open-source tools as external utilities. You can find their respective license files inside their bundled directories.
+
+<details>
+<summary><b>Click to expand credits and source code links</b></summary>
+
+*   **Git Bash & Git for Windows:** [Git SCM](https://git-scm.com) & [Git for Windows](https://gitforwindows.org) (GPLv2 / GPLv3)
+*   **jq:** [jq Official Site](https://github.io) (MIT)
+*   **fastgmad:** [fastgmad GitHub](https://github.com) (MIT / Apache 2.0)
+*   **7-Zip / 7zr:** [7-Zip Official Site](https://7-zip.org) (LGPLv2.1)
+*   **fzf:** [fzf GitHub](https://github.com) (MIT)
+
+*All copyrights belong to their respective authors (Git Authors, FSF, Stephen Dolan, William Venner, Igor Pavlov, and Junegunn Choi). Original license text files are preserved within the bundled application folders.*
+</details>
