@@ -18,13 +18,13 @@ if [[ ! -f "config.json" ]]; then
    cd "$(dirname "${BASH_SOURCE[0]}")"
 fi
 
-if [[ ! -f "script/addon_manager.sh" && ! -f "script/fzf.exe" && ! -f "script/gmodautoextractor.sh" && ! -f "script/7zr.exe" && ! -f "script/fastgmad.exe" && ! -f "script/jq.exe" ]]; then
+if [[ ! -f "addon_manager.sh" && ! -f "fzf.exe" && ! -f "gmodautoextractor.sh" && ! -f "7zr.exe" && ! -f "fastgmad.exe" && ! -f "jq.exe" ]]; then
    echo_red "Error: There is something wrong with the installation. Re-download the tool & try again"
    read -n 1 -s -p "Press any key to continue..."
    exit 1
 fi
 
-if [[ -f "script/addon_manager.sh" ]]; then
+if [[ -f "addon_manager.sh" ]]; then
    clear
    echo_blue "Garry's Mod alternate addons manager by fancy pigeon :)\nSelect the tool to run:"
    echo_yellow "[1] Extract & Install addons\n[2] Enable/Disable addons"
@@ -38,7 +38,7 @@ if [[ -f "script/addon_manager.sh" ]]; then
    if [[ "$selection" == "1" ]]; then
    clear
    else
-      exec bash "script/addon_manager.sh"
+      exec bash "addon_manager.sh"
       exit 0
    fi
 fi
@@ -78,8 +78,8 @@ if [[ -f "config.json" ]]; then
    cat_config=$(cat "config.json")
    config="$(printf '%s' "$cat_config" | sed 's/\\/\//g')"
    echo -e "$config" > "config.json"
-   gmodpath=$(./script/jq.exe -r '.gmod' "config.json" )
-   modfolder=$(./script/jq.exe -r '.mod' "config.json")
+   gmodpath=$(./jq.exe -r '.gmod' "config.json" )
+   modfolder=$(./jq.exe -r '.mod' "config.json")
    if [[ ! -d "$gmodpath" ]]; then
       echo_red "Garry's Mod path is invalid"
       read -n 1 -s -p "Press any key to continue..."
@@ -121,7 +121,7 @@ if [[ -n "$legacyfilebin" ]]; then
    legacyfilename=$(basename "$legacyfilebin")
    legacyparent=$(dirname "$legacyfilebin")
    legacyparent="$legacyparent/"
-   ./script/7zr.exe x "$legacyfilebin" -y -o"$legacyparent" > /dev/null 2>&1 || true
+   ./7zr.exe x "$legacyfilebin" -y -o"$legacyparent" > /dev/null 2>&1 || true
    legacyfile=${legacyfilebin%.bin}
    if [[ -f "$legacyfile" ]]; then
       mv "$legacyfile" "$legacyfile.gma"
@@ -134,7 +134,7 @@ mapfile -t modfile < <(find "$modfolder" -name "*.gma")
 for file in "${modfile[@]}"; do
 
 if [[ -n "$file" ]]; then
-   if ! ./script/fastgmad.exe extract -file "$file" 2>/dev/null; then
+   if ! ./fastgmad.exe extract -file "$file" 2>/dev/null; then
       echo_red "An error occurred on fastgmad tool"
    fi
 else
@@ -151,7 +151,7 @@ parent=$(dirname "$gma_file")
 parent="$parent/"
 json_file="$gma_real_dir_for_json/addon.json"
 safe=$(echo "$title" | sed 's/[<>:"\/\\|?*]/_/g')
-title=$(./script/jq.exe -r '.title' "$json_file")
+title=$(./jq.exe -r '.title' "$json_file")
 
 if [[ ! -d "$parent$safe" ]]; then
    if [ -n "$parent$safe" ] && [ "$parent$safe" != "null" ]; then
