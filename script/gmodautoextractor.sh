@@ -190,8 +190,8 @@ filename=$(basename "$gma_file")
 parent=$(dirname "$gma_file")
 parent="$parent/"
 json_file="$gma_real_dir_for_json/addon.json"
-safe=$(echo "$title" | sed 's/[<>:"\/\\|?*]/_/g')
 title=$(./jq.exe -r '.title' "$json_file")
+safe=$(echo "$title" | sed 's/[<>:"\/\\|?*]/_/g')
 
 if [[ ! -d "$parent$safe" ]]; then
    if [ -n "$parent$safe" ] && [ "$parent$safe" != "null" ]; then
