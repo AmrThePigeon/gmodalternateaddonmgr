@@ -31,7 +31,7 @@ updatescript=$(curl -s "https://raw.githubusercontent.com/AmrThePigeon/gmodalter
 
 
 echo "$gmodaddonmgrbat" > "../gmodaddonmgr.bat"
-echo "$gmodaddonmgrbat" > "addon_manager.sh"
+echo "$addon_managersh" > "addon_manager.sh"
 echo "$gmodautoextractorsh" > "gmodautoextractor.sh"
 echo "$updatescript" > "updater.sh"
 echo "$latest" > "version"
