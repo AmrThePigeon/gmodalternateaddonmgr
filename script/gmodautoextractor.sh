@@ -5,7 +5,7 @@ echo_red() {
    echo -e "\e[31m$1\e[0m"
 }
 echo_blue() {
-   echo -e "\033[0;34m$1\033[0m"
+   echo -e "\033[36m$1\033[0m"
 }
 echo_yellow() {
    echo -e "\033[0;33m$1\033[0m"
@@ -22,12 +22,29 @@ if [[ ! -f "addon_manager.sh" && ! -f "fzf.exe" && ! -f "gmodautoextractor.sh" &
    exit 1
 fi
 
+version="1.2.0"
+latest=$(curl -s "https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/version" | cat)
+
+if ! curl -s 'https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/version' | cat > /dev/null 2>&1 ; then
+   interneterror="1"
+fi
+
 if [[ -f "addon_manager.sh" ]]; then
    clear
-   echo_blue "Garry's Mod alternate addons manager by fancy pigeon :)\nSelect the tool to run:"
-   echo_yellow "[1] Extract & Install addons\n[2] Enable/Disable addons"
+   echo_blue "Garry's Mod alternate addons manager [v$version] by fancy pigeon :)"
+   if [[ "$version" == "$latest" && "$interneterror" != "1" ]]; then
+      echo_blue "The tool is up to date"
+   fi
+   if [[ "$version" != "$latest" && "$interneterror" != "1" ]]; then
+      echo_yellow "New update available [v$latest]"
+   fi
+   if [[ "$interneterror" == "1" ]]; then
+      echo_yellow "Internet Unavailable to fetch update version"
+   fi
+   echo_blue "Select an option:"
+   echo_yellow "[1] Extract & Install addons\n[2] Enable/Disable addons\n[3] Clear path cache\n[4] Update"
    read -r -p "Select: " selection
-   if [[ -z "$selection" || ("$selection" != "1" && "$selection" != "2") ]]; then
+   if [[ -z "$selection" || ("$selection" != "1" && "$selection" != "2" && "$selection" != "3" && "$selection" != "4") ]]; then
    clear
    echo_red "Error: please select a valid option"
    sleep 1
@@ -35,9 +52,34 @@ if [[ -f "addon_manager.sh" ]]; then
    fi
    if [[ "$selection" == "1" ]]; then
    clear
-   else
+   elif [[ "$selection" == "2" ]]; then
       exec bash "addon_manager.sh"
       exit 0
+   elif [[ "$selection" == "3" ]]; then
+        if [[ -f "../config.json" ]]; then
+           rm -f "../config.json"
+        fi
+        clear
+        echo_yellow "Deleted all path cache"
+        sleep 1
+        exec bash "gmodautoextractor.sh"
+   elif [[ "$selection" == "4" ]]; then
+        if [[ "$version" == "$latest" && "$interneterror" != "1" ]]; then
+           clear
+           echo_blue "The tool is up to date"
+           sleep 1
+           exec bash "gmodautoextractor.sh"
+        fi
+        if [[ "$version" != "$latest" && "$interneterror" != "1" ]]; then
+           exec bash "updater.sh"
+           exit 0
+        fi
+        if [[ "$interneterror" == "1" ]]; then
+           clear
+           echo_yellow "Internet Unavailable to fetch update version"
+           sleep 1
+           exec bash "gmodautoextractor.sh"
+        fi
    fi
 fi
 

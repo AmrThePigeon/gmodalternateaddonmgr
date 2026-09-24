@@ -4,6 +4,9 @@ convert_to_gitbash() {
 echo_red() {
    echo -e "\e[31m$1\e[0m"
 }
+echo_yellow() {
+   echo -e "\033[0;33m$1\033[0m"
+}
 
 clear
 
@@ -57,6 +60,23 @@ if [[ -f "../config.json" ]]; then
 fi
 
 gmodpath=$(convert_to_gitbash "$gmodpath")
+
+if [[ ! -d "$gmodpath/garrysmod/addons/disabled" ]]; then
+   if ! mkdir "$gmodpath/garrysmod/addons/disabled"; then
+      echo_red "Error: cannot create \"disabled\" directory in \"$gmodpath/garrysmod/addons/disabled\""
+      read -n 1 -s -p "Press any key to continue..."
+      exit 1
+   fi
+fi
+
+findaddons=$(find "$gmodpath/garrysmod/addons" -mindepth 1 -maxdepth 1 -type d ! -name disabled -printf '%f\n')
+finddisabled=$(find "$gmodpath/garrysmod/addons/disabled" -mindepth 1 -maxdepth 1 -type d -printf '%f\n')
+
+if [[ -z "$findaddons" && -z "$finddisabled" ]]; then
+   echo_yellow "No addons were found"
+   read -n 1 -s -p "Press any key to continue..."
+   exit 1
+fi
 
 while true; do
     mapfile -t enabled  < <(find "$gmodpath/garrysmod/addons" -mindepth 1 -maxdepth 1 -type d ! -name disabled -printf '%f\n')
