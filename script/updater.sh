@@ -8,14 +8,14 @@ echo_red() {
 cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1
 
 currentversion=$(cat "version")
-latest=$(curl -s 'https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/version' | cat)
+latest=$(curl -s 'https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/script/version' | cat)
 if [[ "$latest" == "$currentversion" ]]; then
    echo_blue "The tool is up to date"
    read -n 1 -s -p "Press any key to continue..."
    exit 1
 fi
 
-if ! curl -s 'https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/version' | cat > /dev/null 2>&1 ; then
+if ! curl -s 'https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/script/version' | cat > /dev/null 2>&1 ; then
    interneterror="1"
    echo_red "Error: Unable to update the scripts due to a network problem"
    read -n 1 -s -p "Press any key to continue..."

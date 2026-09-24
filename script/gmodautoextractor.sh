@@ -23,9 +23,9 @@ if [[ ! -f "addon_manager.sh" && ! -f "fzf.exe" && ! -f "gmodautoextractor.sh" &
 fi
 
 version="1.2.0"
-latest=$(curl -s "https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/version" | cat)
+latest=$(curl -s "https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/script/version" | cat)
 
-if ! curl -s 'https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/version' | cat > /dev/null 2>&1 ; then
+if ! curl -s 'https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/script/version' | cat > /dev/null 2>&1 ; then
    interneterror="1"
 fi
 
