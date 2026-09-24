@@ -13,7 +13,7 @@ fi
 
 if [[ ! -f "../config.json" ]]; then
    read -r -p "Garry's Mod path: " gmodpath
-
+   clear
    if [[ ! -d "$gmodpath" ]]; then
       echo_red "Garry's Mod path is invalid"
       read -n 1 -s -p "Press any key to continue..."
