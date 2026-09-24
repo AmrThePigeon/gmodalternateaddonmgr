@@ -14,9 +14,7 @@ echo_green() {
    echo -e "\e[1;32m$1\e[0m"
 }
 
-if [[ ! -f "config.json" ]]; then
-   cd "$(dirname "${BASH_SOURCE[0]}")"
-fi
+cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1
 
 if [[ ! -f "addon_manager.sh" && ! -f "fzf.exe" && ! -f "gmodautoextractor.sh" && ! -f "7zr.exe" && ! -f "fastgmad.exe" && ! -f "jq.exe" ]]; then
    echo_red "Error: There is something wrong with the installation. Re-download the tool & try again"
