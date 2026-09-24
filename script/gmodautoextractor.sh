@@ -14,22 +14,24 @@ echo_green() {
    echo -e "\e[1;32m$1\e[0m"
 }
 
-cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1
+if cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1; then
+   cd "../"
+fi
 
-if [[ ! -f "addon_manager.sh" && ! -f "fzf.exe" && ! -f "gmodautoextractor.sh" && ! -f "7zr.exe" && ! -f "fastgmad.exe" && ! -f "jq.exe" ]]; then
+if [[ ! -f "script/addon_manager.sh" && ! -f "tools/fzf.exe" && ! -f "script/gmodautoextractor.sh" && ! -f "tools/7zr.exe" && ! -f "tools/fastgmad.exe" && ! -f "tools/jq.exe" ]]; then
    echo_red "Error: There is something wrong with the installation. Re-download the tool & try again"
    read -n 1 -s -p "Press any key to continue..."
    exit 1
 fi
 
-version=$(cat "version")
+version=$(cat "script/version")
 latest=$(curl -s "https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/script/version" | cat)
 
 if ! curl -s 'https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/script/version' | cat > /dev/null 2>&1 ; then
    interneterror="1"
 fi
 
-if [[ -f "addon_manager.sh" ]]; then
+if [[ -f "script/addon_manager.sh" ]]; then
    clear
    echo_blue "Garry's Mod alternate addons manager [v$version] by fancy pigeon :)"
    if [[ "$version" == "$latest" && "$interneterror" != "1" ]]; then
@@ -48,42 +50,42 @@ if [[ -f "addon_manager.sh" ]]; then
    clear
    echo_red "Error: please select a valid option"
    sleep 1
-   exec bash "gmodautoextractor.sh"
+   exec bash "script/gmodautoextractor.sh"
    fi
    if [[ "$selection" == "1" ]]; then
    clear
    elif [[ "$selection" == "2" ]]; then
-      exec bash "addon_manager.sh"
+      exec bash "script/addon_manager.sh"
       exit 0
    elif [[ "$selection" == "3" ]]; then
-        if [[ -f "../config.json" ]]; then
-           rm -f "../config.json"
+        if [[ -f "config.json" ]]; then
+           rm -f "config.json"
         fi
         clear
         echo_yellow "Deleted all path cache"
         sleep 1
-        exec bash "gmodautoextractor.sh"
+        exec bash "script/gmodautoextractor.sh"
    elif [[ "$selection" == "4" ]]; then
         if [[ "$version" == "$latest" && "$interneterror" != "1" ]]; then
            clear
            echo_blue "The tool is up to date"
            sleep 1
-           exec bash "gmodautoextractor.sh"
+           exec bash "script/gmodautoextractor.sh"
         fi
         if [[ "$version" != "$latest" && "$interneterror" != "1" ]]; then
-           exec bash "updater.sh"
+           exec bash "script/updater.sh"
            exit 0
         fi
         if [[ "$interneterror" == "1" ]]; then
            clear
            echo_yellow "Internet Unavailable to fetch update version"
            sleep 1
-           exec bash "gmodautoextractor.sh"
+           exec bash "script/gmodautoextractor.sh"
         fi
    fi
 fi
 
-if [[ ! -f "../config.json" ]]; then
+if [[ ! -f "config.json" ]]; then
    read -r -p "Garry's Mod path: " gmodpath
    read -r -p "Workshop addons path: " modfolder
 
@@ -111,15 +113,15 @@ if [[ ! -f "../config.json" ]]; then
    gmodpath="$(printf '%s' "$gmodpath" | sed 's/\\/\//g')"
    modfolder="$(printf '%s' "$modfolder" | sed 's/\\/\//g')"
 
-   touch "../config.json"
-   echo -e "{\n\"gmod\": \""$gmodpath"\",\n\"mod\": \""$modfolder"\"\n}" > "../config.json"
+   touch "config.json"
+   echo -e "{\n\"gmod\": \""$gmodpath"\",\n\"mod\": \""$modfolder"\"\n}" > "config.json"
 fi
-if [[ -f "../config.json" ]]; then
-   cat_config=$(cat "../config.json")
+if [[ -f "config.json" ]]; then
+   cat_config=$(cat "config.json")
    config="$(printf '%s' "$cat_config" | sed 's/\\/\//g')"
-   echo -e "$config" > "../config.json"
-   gmodpath=$(./jq.exe -r '.gmod' "../config.json" )
-   modfolder=$(./jq.exe -r '.mod' "../config.json")
+   echo -e "$config" > "config.json"
+   gmodpath=$(./tools/jq.exe -r '.gmod' "config.json" )
+   modfolder=$(./tools/jq.exe -r '.mod' "config.json")
    if [[ ! -d "$gmodpath" ]]; then
       echo_red "Garry's Mod path is invalid"
       read -n 1 -s -p "Press any key to continue..."
@@ -141,7 +143,7 @@ if [[ -f "../config.json" ]]; then
             read -n 1 -s -p "Press any key to continue..."
             exit 1
          else
-            echo -e "{\n\"gmod\": \""$gmodpath"\",\n\"mod\": \""$modfolder"\"\n}" > "../config.json"
+            echo -e "{\n\"gmod\": \""$gmodpath"\",\n\"mod\": \""$modfolder"\"\n}" > "config.json"
          fi
       fi
    fi
@@ -161,7 +163,7 @@ if [[ -n "$legacyfilebin" ]]; then
    legacyfilename=$(basename "$legacyfilebin")
    legacyparent=$(dirname "$legacyfilebin")
    legacyparent="$legacyparent/"
-   ./7zr.exe x "$legacyfilebin" -y -o"$legacyparent" > /dev/null 2>&1 || true
+   ./tools/7zr.exe x "$legacyfilebin" -y -o"$legacyparent" > /dev/null 2>&1 || true
    legacyfile=${legacyfilebin%.bin}
    if [[ -f "$legacyfile" ]]; then
       mv "$legacyfile" "$legacyfile.gma"
@@ -174,7 +176,7 @@ mapfile -t modfile < <(find "$modfolder" -name "*.gma")
 for file in "${modfile[@]}"; do
 
 if [[ -n "$file" ]]; then
-   if ! ./fastgmad.exe extract -file "$file" 2>/dev/null; then
+   if ! ./tools/fastgmad.exe extract -file "$file" 2>/dev/null; then
       echo_red "An error occurred on fastgmad tool"
    fi
 else
@@ -190,7 +192,7 @@ filename=$(basename "$gma_file")
 parent=$(dirname "$gma_file")
 parent="$parent/"
 json_file="$gma_real_dir_for_json/addon.json"
-title=$(./jq.exe -r '.title' "$json_file")
+title=$(./tools/jq.exe -r '.title' "$json_file")
 safe=$(echo "$title" | sed 's/[<>:"\/\\|?*]/_/g')
 
 if [[ ! -d "$parent$safe" ]]; then

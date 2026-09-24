@@ -7,9 +7,11 @@ echo_red() {
    echo -e "\e[31m$1\e[0m"
 }
 
-cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1
+if cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1; then
+   cd "../"
+fi
 
-currentversion=$(cat "version")
+currentversion=$(cat "script/version")
 latest=$(curl -s 'https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/script/version' | cat)
 if [[ "$latest" == "$currentversion" ]]; then
    echo_blue "The tool is up to date"
@@ -30,11 +32,11 @@ gmodautoextractorsh=$(curl -s "https://raw.githubusercontent.com/AmrThePigeon/gm
 updatescript=$(curl -s "https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/script/updater.sh" | cat)
 
 
-echo "$gmodaddonmgrbat" > "../gmodaddonmgr.bat"
-echo "$addon_managersh" > "addon_manager.sh"
-echo "$gmodautoextractorsh" > "gmodautoextractor.sh"
-echo "$updatescript" > "updater.sh"
-echo "$latest" > "version"
+echo "$gmodaddonmgrbat" > "gmodaddonmgr.bat"
+echo "$addon_managersh" > "script/addon_manager.sh"
+echo "$gmodautoextractorsh" > "script/gmodautoextractor.sh"
+echo "$updatescript" > "script/updater.sh"
+echo "$latest" > "script/version"
 
 echo_blue "Update complete"
 read -n 1 -s -p "Press any key to continue..."

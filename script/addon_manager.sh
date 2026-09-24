@@ -10,11 +10,11 @@ echo_yellow() {
 
 clear
 
-if [[ ! -f "fzf.exe" ]]; then
-   cd "$(dirname "${BASH_SOURCE[0]}")"
+if cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1; then
+   cd "../"
 fi
 
-if [[ ! -f "../config.json" ]]; then
+if [[ ! -f "config.json" ]]; then
    read -r -p "Garry's Mod path: " gmodpath
    clear
    if [[ ! -d "$gmodpath" ]]; then
@@ -34,15 +34,15 @@ if [[ ! -f "../config.json" ]]; then
    
    gmodpath="$(printf '%s' "$gmodpath" | sed 's/\\/\//g')"
 
-   touch "../config.json"
-   echo -e "{\n\"gmod\": \""$gmodpath"\",\n\"mod\": \"""\"\n}" > "../config.json"
+   touch "config.json"
+   echo -e "{\n\"gmod\": \""$gmodpath"\",\n\"mod\": \"""\"\n}" > "config.json"
 fi
 
-if [[ -f "../config.json" ]]; then
-   cat_config=$(cat "../config.json")
+if [[ -f "config.json" ]]; then
+   cat_config=$(cat "config.json")
    config="$(printf '%s' "$cat_config" | sed 's/\\/\//g')"
-   echo -e "$config" > "../config.json"
-   gmodpath=$(./jq.exe -r '.gmod' "../config.json" )
+   echo -e "$config" > "config.json"
+   gmodpath=$(./tools/jq.exe -r '.gmod' "config.json" )
    if [[ ! -d "$gmodpath" ]]; then
       echo_red "Garry's Mod path is invalid"
       read -n 1 -s -p "Press any key to continue..."
@@ -85,7 +85,7 @@ while true; do
     all=("${enabled[@]}" "${disabled[@]}")
     [[ ${#all[@]} -eq 0 ]] && break
 
-    mapfile -t picks < <(printf '%s\n' "${all[@]}" | ./fzf.exe -m --header="Tab = multi-select, Ctrl + C to exit" --layout=reverse)
+    mapfile -t picks < <(printf '%s\n' "${all[@]}" | ./tools/fzf.exe -m --header="Tab = multi-select, Ctrl + C to exit" --layout=reverse)
 
     for name in "${picks[@]}"; do
         if [[ -d "$gmodpath/garrysmod/addons/$name" ]]; then
