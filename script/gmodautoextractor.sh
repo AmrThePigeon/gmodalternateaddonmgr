@@ -31,7 +31,7 @@ if [[ -f "addon_manager.sh" ]]; then
    clear
    echo_red "Error: please select a valid option"
    sleep 1
-   exec bash "$0" "$@"
+   exec bash "gmodautoextractor.sh"
    fi
    if [[ "$selection" == "1" ]]; then
    clear
@@ -41,7 +41,7 @@ if [[ -f "addon_manager.sh" ]]; then
    fi
 fi
 
-if [[ ! -f "config.json" ]]; then
+if [[ ! -f "../config.json" ]]; then
    read -r -p "Garry's Mod path: " gmodpath
    read -r -p "Workshop addons path: " modfolder
 
@@ -69,15 +69,15 @@ if [[ ! -f "config.json" ]]; then
    gmodpath="$(printf '%s' "$gmodpath" | sed 's/\\/\//g')"
    modfolder="$(printf '%s' "$modfolder" | sed 's/\\/\//g')"
 
-   touch "config.json"
-   echo -e "{\n\"gmod\": \""$gmodpath"\",\n\"mod\": \""$modfolder"\"\n}" > "config.json"
+   touch "../config.json"
+   echo -e "{\n\"gmod\": \""$gmodpath"\",\n\"mod\": \""$modfolder"\"\n}" > "../config.json"
 fi
-if [[ -f "config.json" ]]; then
-   cat_config=$(cat "config.json")
+if [[ -f "../config.json" ]]; then
+   cat_config=$(cat "../config.json")
    config="$(printf '%s' "$cat_config" | sed 's/\\/\//g')"
-   echo -e "$config" > "config.json"
-   gmodpath=$(./jq.exe -r '.gmod' "config.json" )
-   modfolder=$(./jq.exe -r '.mod' "config.json")
+   echo -e "$config" > "../config.json"
+   gmodpath=$(./jq.exe -r '.gmod' "../config.json" )
+   modfolder=$(./jq.exe -r '.mod' "../config.json")
    if [[ ! -d "$gmodpath" ]]; then
       echo_red "Garry's Mod path is invalid"
       read -n 1 -s -p "Press any key to continue..."
@@ -99,7 +99,7 @@ if [[ -f "config.json" ]]; then
             read -n 1 -s -p "Press any key to continue..."
             exit 1
          else
-            echo -e "{\n\"gmod\": \""$gmodpath"\",\n\"mod\": \""$modfolder"\"\n}" > "config.json"
+            echo -e "{\n\"gmod\": \""$gmodpath"\",\n\"mod\": \""$modfolder"\"\n}" > "../config.json"
          fi
       fi
    fi
