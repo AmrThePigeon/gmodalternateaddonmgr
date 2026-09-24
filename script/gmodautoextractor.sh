@@ -22,7 +22,7 @@ if [[ ! -f "addon_manager.sh" && ! -f "fzf.exe" && ! -f "gmodautoextractor.sh" &
    exit 1
 fi
 
-version=(cat "version")
+version=$(cat "version")
 latest=$(curl -s "https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/script/version" | cat)
 
 if ! curl -s 'https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/script/version' | cat > /dev/null 2>&1 ; then
