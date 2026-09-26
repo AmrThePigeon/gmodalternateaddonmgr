@@ -42,7 +42,7 @@ if [[ -f "config.json" ]]; then
    cat_config=$(cat "config.json")
    config="$(printf '%s' "$cat_config" | sed 's/\\/\//g')"
    echo -e "$config" > "config.json"
-   gmodpath=$(./tools/jq.exe -r '.gmod' "config.json" )
+   gmodpath=$(./tools/jq -r '.gmod' "config.json" )
    if [[ ! -d "$gmodpath" ]]; then
       echo_red "Garry's Mod path is invalid"
       read -n 1 -s -p "Press any key to continue..."
@@ -85,7 +85,7 @@ while true; do
     all=("${enabled[@]}" "${disabled[@]}")
     [[ ${#all[@]} -eq 0 ]] && break
 
-    mapfile -t picks < <(printf '%s\n' "${all[@]}" | ./tools/fzf.exe -m --header="Tab = multi-select, Ctrl + C to exit" --layout=reverse)
+    mapfile -t picks < <(printf '%s\n' "${all[@]}" | ./tools/fzf -m --header="Tab = multi-select, Ctrl + C to exit" --layout=reverse)
 
     for name in "${picks[@]}"; do
         if [[ -d "$gmodpath/garrysmod/addons/$name" ]]; then

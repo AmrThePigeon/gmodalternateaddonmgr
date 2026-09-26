@@ -18,7 +18,7 @@ if cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1; then
    cd "../"
 fi
 
-if [[ ! -f "script/addon_manager.sh" && ! -f "tools/fzf.exe" && ! -f "script/gmodautoextractor.sh" && ! -f "tools/7zr.exe" && ! -f "tools/fastgmad.exe" && ! -f "tools/jq.exe" ]]; then
+if [[ ! -f "script/addon_manager.sh" && ! -f "tools/fzf" && ! -f "script/gmodautoextractor.sh" && ! -f "tools/7zzs" && ! -f "tools/fastgmad" && ! -f "tools/jq" ]]; then
    echo_red "Error: There is something wrong with the installation. Re-download the tool & try again"
    read -n 1 -s -p "Press any key to continue..."
    exit 1
@@ -120,8 +120,8 @@ if [[ -f "config.json" ]]; then
    cat_config=$(cat "config.json")
    config="$(printf '%s' "$cat_config" | sed 's/\\/\//g')"
    echo -e "$config" > "config.json"
-   gmodpath=$(./tools/jq.exe -r '.gmod' "config.json" )
-   modfolder=$(./tools/jq.exe -r '.mod' "config.json")
+   gmodpath=$(./tools/jq -r '.gmod' "config.json" )
+   modfolder=$(./tools/jq -r '.mod' "config.json")
    if [[ ! -d "$gmodpath" ]]; then
       echo_red "Garry's Mod path is invalid"
       read -n 1 -s -p "Press any key to continue..."
@@ -163,7 +163,7 @@ if [[ -n "$legacyfilebin" ]]; then
    legacyfilename=$(basename "$legacyfilebin")
    legacyparent=$(dirname "$legacyfilebin")
    legacyparent="$legacyparent/"
-   ./tools/7zr.exe x "$legacyfilebin" -y -o"$legacyparent" > /dev/null 2>&1 || true
+   ./tools/7zzs x "$legacyfilebin" -y -o"$legacyparent" > /dev/null 2>&1 || true
    legacyfile=${legacyfilebin%.bin}
    if [[ -f "$legacyfile" ]]; then
       mv "$legacyfile" "$legacyfile.gma"
@@ -176,7 +176,7 @@ mapfile -t modfile < <(find "$modfolder" -name "*.gma")
 for file in "${modfile[@]}"; do
 
 if [[ -n "$file" ]]; then
-   if ! ./tools/fastgmad.exe extract -file "$file" 2>/dev/null; then
+   if ! ./tools/fastgmad extract -file "$file" 2>/dev/null; then
       echo_red "An error occurred on fastgmad tool"
    fi
 else
@@ -192,7 +192,7 @@ filename=$(basename "$gma_file")
 parent=$(dirname "$gma_file")
 parent="$parent/"
 json_file="$gma_real_dir_for_json/addon.json"
-title=$(./tools/jq.exe -r '.title' "$json_file")
+title=$(./tools/jq -r '.title' "$json_file")
 safe=$(echo "$title" | sed 's/[<>:"\/\\|?*]/_/g')
 
 if [[ ! -d "$parent$safe" ]]; then
