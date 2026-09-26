@@ -172,7 +172,7 @@ fi
 done
 
 mapfile -t modfile < <(find "$modfolder" -name "*.gma")
-
+totalmodcount=$(echo "${#modfile[@]}")
 for file in "${modfile[@]}"; do
 
 if [[ -n "$file" ]]; then
@@ -200,8 +200,9 @@ if [[ ! -d "$parent$safe" ]]; then
       if [[ -d "$gmodpath/garrysmod/addons/$safe" ]]; then
          echo_yellow "Directory '$safe' already exists"
       fi
-      mv -f "$gma_real_dir" "$parent$safe"
       echo_blue "Extracting \"$title\""
+      mv -f "$gma_real_dir" "$parent$safe"
+      ((extractedmodcount+=1))
       if ! mv -f "$parent$safe" "$gmodpath/garrysmod/addons/$safe" 2>/dev/null; then
          rm -rf "$parent$safe"
       fi
@@ -224,6 +225,13 @@ if [[ -n "$legacyfilebin2" ]]; then
    fi
 fi
 done
+
+if [[ "$totalmodcount" == "$extractedmodcount" ]]; then
+   echo_green "Total found addons [$totalmodcount]"
+else
+   echo_red "[WARN] The addons count and the extracted addons count aren't equal"
+   echo_red "Total found addons [$totalmodcount], total extracted addons [$extractedmodcount]"
+fi
 
 echo_green "Extraction complete"
 read -n 1 -s -p "Press any key to continue..."
