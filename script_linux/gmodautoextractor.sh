@@ -25,9 +25,9 @@ if [[ ! -f "script/addon_manager.sh" && ! -f "tools/fzf" && ! -f "script/gmodaut
 fi
 
 version=$(cat "script/version")
-latest=$(curl -s "https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/script/version" | cat)
+latest=$(curl -s "https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/script_linux/version" | cat)
 
-if ! curl -s 'https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/script/version' | cat > /dev/null 2>&1 ; then
+if ! curl -s 'https://raw.githubusercontent.com/AmrThePigeon/gmodalternateaddonmgr/refs/heads/main/script_linux/version' | cat > /dev/null 2>&1 ; then
    interneterror="1"
 fi
 
